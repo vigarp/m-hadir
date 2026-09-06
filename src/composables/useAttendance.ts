@@ -45,12 +45,15 @@ export function useAttendance() {
       isGuest: true
     }));
 
-    // Deduplicate by ID
-    const seen = new Set<string>();
+    // Deduplicate by ID and NIM
+    const seenIds = new Set<string>();
+    const seenNims = new Set<string>();
     const result: Student[] = [];
     [...fromMain, ...custom].forEach((s) => {
-      if (!seen.has(s.id)) {
-        seen.add(s.id);
+      const nimKey = s.nim.trim().toLowerCase();
+      if (!seenIds.has(s.id) && (!nimKey || !seenNims.has(nimKey))) {
+        seenIds.add(s.id);
+        if (nimKey) seenNims.add(nimKey);
         result.push(s);
       }
     });

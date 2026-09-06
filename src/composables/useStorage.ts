@@ -200,15 +200,47 @@ export function useStorage() {
       id: 'rev-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6),
       nim: student.nim.trim(),
       name: student.name.trim(),
+      courseIds: [courseId],
       isGuest: true
     };
     course.customStudents.push(newGuest);
+
+    // Also sync to mainStudents if not already present, or add courseId if present
+    const existing = mainStudents.value.find(
+      (s) => s.nim.toLowerCase() === student.nim.trim().toLowerCase()
+    );
+    if (existing) {
+      if (!existing.courseIds) {
+        existing.courseIds = [];
+      }
+      if (!existing.courseIds.includes(courseId)) {
+        existing.courseIds.push(courseId);
+        existing.isGuest = true;
+      }
+    } else {
+      mainStudents.value.push({ ...newGuest });
+    }
   }
 
   function removeCustomStudentFromCourse(courseId: string, studentId: string) {
+    let studentNim = '';
     const course = courses.value.find((c) => c.id === courseId);
     if (course && course.customStudents) {
+      const target = course.customStudents.find((s) => s.id === studentId);
+      if (target) studentNim = target.nim;
       course.customStudents = course.customStudents.filter((s) => s.id !== studentId);
+    }
+
+    // Also unlink/remove from mainStudents if linked
+    const mainSt = mainStudents.value.find(
+      (s) => s.id === studentId || (studentNim && s.nim.toLowerCase() === studentNim.toLowerCase())
+    );
+    if (mainSt && mainSt.courseIds) {
+      mainSt.courseIds = mainSt.courseIds.filter((cid) => cid !== courseId);
+      if (mainSt.courseIds.length === 0) {
+        delete mainSt.courseIds;
+        mainSt.isGuest = false;
+      }
     }
   }
 

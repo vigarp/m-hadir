@@ -142,5 +142,20 @@ describe('useStorage Composable', () => {
     expect(revisiStudent?.isGuest).toBe(true);
     expect(revisiStudent?.courseIds?.length).toBe(1);
   });
+
+  it('unlinks course from student in mainStudents when removeCustomStudentFromCourse is called', () => {
+    const { addCourse, addMainStudent, mainStudents, removeCustomStudentFromCourse } = useStorage();
+    const course = addCourse('ALJABAR LINIER');
+    const student = addMainStudent('211011', 'Dimas Revisi', [course.id]);
+
+    expect(student.courseIds).toContain(course.id);
+    expect(student.isGuest).toBe(true);
+
+    removeCustomStudentFromCourse(course.id, student.id);
+
+    const updated = mainStudents.value.find((s) => s.id === student.id);
+    expect(updated?.courseIds).toBeUndefined();
+    expect(updated?.isGuest).toBe(false);
+  });
 });
 

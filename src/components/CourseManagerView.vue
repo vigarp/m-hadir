@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Plus, Trash2, Edit2, X, Users, Code2 } from 'lucide-vue-next';
-import type { Course } from '../types';
+import type { Course, Student } from '../types';
 
-defineProps<{
+const props = defineProps<{
   courses: Course[];
   activeCourseId: string;
+  students?: Student[];
 }>();
 
 const emit = defineEmits<{
@@ -68,6 +69,50 @@ function saveEdit(id: string) {
     time: editTime.value.trim()
   });
   editingId.value = null;
+}
+
+function getCourseRevisiStudents(course: Course): Student[] {
+  // 1. From mainStudents who have this courseId in courseIds
+  const fromMain: Student[] = (props.students || [])
+    .filter((s) => s.courseIds && s.courseIds.includes(course.id))
+    .map((s) => ({
+      ...s,
+      isGuest: true
+    }));
+
+  // 2. From course.customStudents (legacy / direct additions)
+  const fromCustom: Student[] = (course.customStudents || []).map((s) => ({
+    ...s,
+    isGuest: true
+  }));
+
+  // Deduplicate by id and nim
+  const seenIds = new Set<string>();
+  const seenNims = new Set<string>();
+  const result: Student[] = [];
+
+  [...fromMain, ...fromCustom].forEach((s) => {
+    const nimKey = s.nim.trim().toLowerCase();
+    if (!seenIds.has(s.id) && (!nimKey || !seenNims.has(nimKey))) {
+      seenIds.add(s.id);
+      if (nimKey) seenNims.add(nimKey);
+      result.push(s);
+    }
+  });
+
+  return result;
+}
+
+function getCourseTotalCount(course: Course): { total: number; regular: number; revisi: number } {
+  const regularCount = (props.students || []).filter(
+    (s) => !s.courseIds || s.courseIds.length === 0
+  ).length;
+  const revisiCount = getCourseRevisiStudents(course).length;
+  return {
+    total: regularCount + revisiCount,
+    regular: regularCount,
+    revisi: revisiCount
+  };
 }
 </script>
 
@@ -267,7 +312,7 @@ function saveEdit(id: string) {
                   Aktif Sekarang
                 </span>
               </div>
-              <div class="text-xs text-slate-500 mt-1 flex flex-wrap gap-x-2.5 gap-y-0.5">
+              <div class="text-xs text-slate-500 mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1">
                 <span v-if="course.className" class="font-bold text-emerald-800 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
                   {{ course.className }}
                 </span>
@@ -279,6 +324,12 @@ function saveEdit(id: string) {
                 </span>
                 <span v-if="course.lecturer" class="text-slate-600">
                   {{ course.lecturer }}
+                </span>
+                <span v-if="props.students && props.students.length > 0" class="text-[11px] font-medium text-slate-600 bg-slate-100 px-1.5 py-0.2 rounded">
+                  {{ getCourseTotalCount(course).total }} Mhs
+                  <span v-if="getCourseTotalCount(course).revisi > 0" class="text-purple-700 font-bold">
+                    ({{ getCourseTotalCount(course).revisi }} revisi)
+                  </span>
                 </span>
               </div>
             </div>
@@ -312,7 +363,7 @@ function saveEdit(id: string) {
             <div class="flex items-center justify-between text-[11px]">
               <span class="font-bold text-slate-600 flex items-center gap-1">
                 <Users class="w-3 h-3 text-purple-600" />
-                <span>Mahasiswa Revisi: {{ course.customStudents?.length || 0 }} Orang</span>
+                <span>Mahasiswa Revisi: {{ getCourseRevisiStudents(course).length }} Orang</span>
               </span>
               <button
                 type="button"
@@ -324,9 +375,9 @@ function saveEdit(id: string) {
             </div>
 
             <!-- List of Guest Students in This Course -->
-            <div v-if="course.customStudents && course.customStudents.length > 0" class="flex flex-wrap gap-1.5 pt-1">
+            <div v-if="getCourseRevisiStudents(course).length > 0" class="flex flex-wrap gap-1.5 pt-1">
               <span
-                v-for="guest in course.customStudents"
+                v-for="guest in getCourseRevisiStudents(course)"
                 :key="guest.id"
                 class="inline-flex items-center gap-1 bg-white border border-purple-200 text-purple-900 text-[11px] px-2 py-0.5 rounded-lg shadow-2xs"
               >

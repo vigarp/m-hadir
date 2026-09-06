@@ -229,6 +229,7 @@ function handleJsonImport(data: { jsonString: string; replaceCourses: boolean; r
         <CourseManagerView
           :courses="courses"
           :active-course-id="activeCourseId"
+          :students="mainStudents"
           @select-course="activeCourseId = $event; activeTab = 'attendance'"
           @add-course="addCourse($event.name, $event.lecturer, $event.code, $event.className, $event.time)"
           @update-course="updateCourse"
