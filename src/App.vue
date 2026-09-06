@@ -146,13 +146,14 @@ function loadHistorySession(courseId: string, date: string) {
         <div class="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-xs space-y-2.5">
           <!-- Course Selector Dropdown -->
           <div>
-            <label for="course-select" class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+            <label for="course-select" class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">
               Mata Kuliah:
             </label>
             <div class="relative">
               <select
                 id="course-select"
                 v-model="activeCourseId"
+                aria-label="Pilih Mata Kuliah"
                 class="w-full text-xs font-bold py-2.5 pl-3 pr-8 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500"
               >
                 <option v-for="c in courses" :key="c.id" :value="c.id">
@@ -166,19 +167,20 @@ function loadHistorySession(courseId: string, date: string) {
           <!-- Date & Pertemuan Row -->
           <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100">
             <div>
-              <label for="session-date-input" class="block text-[10px] font-bold text-slate-400 mb-0.5">Tanggal Pertemuan</label>
+              <label for="session-date-input" class="block text-[10px] font-bold text-slate-600 mb-0.5">Tanggal Pertemuan</label>
               <div class="relative">
                 <input
                   id="session-date-input"
                   v-model="sessionDate"
                   type="date"
+                  aria-label="Tanggal Pertemuan"
                   class="w-full text-xs font-semibold py-1.5 px-2.5 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                 />
               </div>
             </div>
 
             <div>
-              <label for="meeting-no-input" class="block text-[10px] font-bold text-slate-400 mb-0.5">Pertemuan Ke- (opsional)</label>
+              <label for="meeting-no-input" class="block text-[10px] font-bold text-slate-600 mb-0.5">Pertemuan Ke- (opsional)</label>
               <input
                 id="meeting-no-input"
                 v-model.number="meetingNo"
@@ -186,6 +188,7 @@ function loadHistorySession(courseId: string, date: string) {
                 min="1"
                 max="20"
                 placeholder="Contoh: 3"
+                aria-label="Pertemuan Ke (opsional)"
                 class="w-full text-xs font-semibold py-1.5 px-2.5 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500"
               />
             </div>

@@ -42,7 +42,9 @@ function handleSubmit() {
           </div>
         </div>
         <button
+          type="button"
           @click="emit('close')"
+          aria-label="Tutup modal"
           class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition"
         >
           <X class="w-5 h-5" />

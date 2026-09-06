@@ -61,7 +61,9 @@ function loadSample() {
           </div>
         </div>
         <button
+          type="button"
           @click="emit('close')"
+          aria-label="Tutup modal"
           class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition"
         >
           <X class="w-5 h-5" />
@@ -142,7 +144,7 @@ function loadSample() {
               </thead>
               <tbody class="divide-y divide-slate-100">
                 <tr v-for="(item, idx) in parsedStudents" :key="idx" class="hover:bg-slate-50">
-                  <td class="py-1.5 px-3 text-slate-400 text-center">{{ idx + 1 }}</td>
+                  <td class="py-1.5 px-3 text-slate-500 text-center">{{ idx + 1 }}</td>
                   <td class="py-1.5 px-3 font-mono font-medium text-slate-700">{{ item.nim }}</td>
                   <td class="py-1.5 px-3 text-slate-800">{{ item.name }}</td>
                 </tr>

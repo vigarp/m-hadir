@@ -91,7 +91,9 @@ function openWhatsAppDirect() {
           </div>
         </div>
         <button
+          type="button"
           @click="emit('close')"
+          aria-label="Tutup modal"
           class="p-1.5 rounded-lg text-emerald-200 hover:text-white hover:bg-emerald-800 transition"
         >
           <X class="w-5 h-5" />

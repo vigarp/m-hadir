@@ -91,7 +91,7 @@ function saveEdit(id: string) {
     <div v-if="showAddForm" class="bg-white p-4 rounded-2xl border border-emerald-300 shadow-sm space-y-3">
       <div class="flex items-center justify-between">
         <h3 class="text-xs font-bold text-slate-700">Mata Kuliah Baru</h3>
-        <button @click="showAddForm = false" class="text-slate-400 hover:text-slate-600">
+        <button type="button" @click="showAddForm = false" aria-label="Batal tambah matkul" class="text-slate-400 hover:text-slate-600">
           <X class="w-4 h-4" />
         </button>
       </div>
@@ -272,17 +272,21 @@ function saveEdit(id: string) {
             <!-- Action Buttons -->
             <div class="flex items-center gap-1 shrink-0">
               <button
+                type="button"
                 @click="startEdit(course)"
                 class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition"
                 title="Edit Matkul"
+                :aria-label="`Edit matkul ${course.name}`"
               >
                 <Edit2 class="w-4 h-4" />
               </button>
               <button
                 v-if="courses.length > 1"
+                type="button"
                 @click="emit('removeCourse', course.id)"
                 class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
                 title="Hapus Matkul"
+                :aria-label="`Hapus matkul ${course.name}`"
               >
                 <Trash2 class="w-4 h-4" />
               </button>
@@ -297,6 +301,7 @@ function saveEdit(id: string) {
                 <span>Mahasiswa Revisi: {{ course.customStudents?.length || 0 }} Orang</span>
               </span>
               <button
+                type="button"
                 @click="emit('openAddGuest', course.id)"
                 class="text-[10px] font-bold text-purple-700 hover:text-purple-900 bg-purple-50 hover:bg-purple-100 px-2 py-0.5 rounded-md transition"
               >
@@ -314,9 +319,11 @@ function saveEdit(id: string) {
                 <span class="font-mono text-[10px] text-purple-600">{{ guest.nim }}</span>
                 <span class="font-medium">{{ guest.name }}</span>
                 <button
+                  type="button"
                   @click="emit('removeCustomStudent', course.id, guest.id)"
                   class="text-slate-400 hover:text-rose-600 ml-0.5"
                   title="Hapus mahasiswa revisi ini"
+                  :aria-label="`Hapus mahasiswa revisi ${guest.name}`"
                 >
                   <X class="w-3 h-3" />
                 </button>

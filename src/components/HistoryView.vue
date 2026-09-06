@@ -89,17 +89,21 @@ function formatIndoDate(dateStr: string) {
 
         <div class="flex items-center gap-1.5 shrink-0">
           <button
+            type="button"
             @click="emit('loadSession', session.courseId, session.date)"
             class="p-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-xl font-bold text-xs flex items-center gap-1 transition active:scale-95"
             title="Buka Presensi Ini"
+            :aria-label="`Buka presensi ${getCourseName(session.courseId)} tanggal ${session.date}`"
           >
             <span>Buka</span>
             <ArrowRight class="w-3.5 h-3.5" />
           </button>
           <button
+            type="button"
             @click="emit('deleteSession', session.id)"
             class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition"
             title="Hapus Riwayat Ini"
+            :aria-label="`Hapus riwayat presensi ${getCourseName(session.courseId)} tanggal ${session.date}`"
           >
             <Trash2 class="w-4 h-4" />
           </button>
@@ -110,7 +114,7 @@ function formatIndoDate(dateStr: string) {
     <div v-else class="bg-white rounded-2xl p-8 text-center border border-slate-200 space-y-2">
       <Clock class="w-10 h-10 text-slate-300 mx-auto" />
       <p class="font-bold text-sm text-slate-700">Belum ada riwayat tersimpan</p>
-      <p class="text-xs text-slate-400">
+      <p class="text-xs text-slate-500">
         Saat Anda mengisi presensi pada tab "Presensi", sesi akan otomatis tersimpan di sini.
       </p>
     </div>

@@ -67,10 +67,12 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
       <div class="flex items-center justify-between text-xs">
         <span class="font-bold text-slate-700 flex items-center gap-1.5">
           <span>Ringkasan Kehadiran</span>
-          <span class="text-[11px] font-normal text-slate-400">({{ stats.total }} Mahasiswa)</span>
+          <span class="text-[11px] font-normal text-slate-500">({{ stats.total }} Mahasiswa)</span>
         </span>
         <button
+          type="button"
           @click="emit('markAll', 'present')"
+          aria-label="Tandai semua mahasiswa hadir"
           class="text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1 rounded-lg flex items-center gap-1 transition active:scale-95"
         >
           <CheckCheck class="w-3.5 h-3.5" />
@@ -80,7 +82,8 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
 
       <!-- Compact 4 Stats Counter Pill Grid -->
       <div class="grid grid-cols-4 gap-1.5 text-center">
-        <div
+        <button
+          type="button"
           @click="emit('update:statusFilter', statusFilter === 'present' ? 'all' : 'present')"
           :class="[
             'py-1.5 px-1 rounded-xl cursor-pointer transition border',
@@ -88,12 +91,14 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
               ? 'bg-emerald-100/80 border-emerald-300 ring-2 ring-emerald-500/20'
               : 'bg-slate-50 border-slate-100 hover:bg-emerald-50/50'
           ]"
+          :aria-label="`Filter hadir, jumlah: ${stats.present}`"
         >
-          <div class="text-[10px] font-bold text-emerald-700">Hadir</div>
+          <div class="text-[10px] font-bold text-emerald-800">Hadir</div>
           <div class="text-sm font-black text-slate-800">{{ stats.present }}</div>
-        </div>
+        </button>
 
-        <div
+        <button
+          type="button"
           @click="emit('update:statusFilter', statusFilter === 'permit' ? 'all' : 'permit')"
           :class="[
             'py-1.5 px-1 rounded-xl cursor-pointer transition border',
@@ -101,12 +106,14 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
               ? 'bg-amber-100/80 border-amber-300 ring-2 ring-amber-500/20'
               : 'bg-slate-50 border-slate-100 hover:bg-amber-50/50'
           ]"
+          :aria-label="`Filter izin, jumlah: ${stats.permit}`"
         >
-          <div class="text-[10px] font-bold text-amber-700">Izin</div>
+          <div class="text-[10px] font-bold text-amber-800">Izin</div>
           <div class="text-sm font-black text-slate-800">{{ stats.permit }}</div>
-        </div>
+        </button>
 
-        <div
+        <button
+          type="button"
           @click="emit('update:statusFilter', statusFilter === 'sick' ? 'all' : 'sick')"
           :class="[
             'py-1.5 px-1 rounded-xl cursor-pointer transition border',
@@ -114,12 +121,14 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
               ? 'bg-sky-100/80 border-sky-300 ring-2 ring-sky-500/20'
               : 'bg-slate-50 border-slate-100 hover:bg-sky-50/50'
           ]"
+          :aria-label="`Filter sakit, jumlah: ${stats.sick}`"
         >
-          <div class="text-[10px] font-bold text-sky-700">Sakit</div>
+          <div class="text-[10px] font-bold text-sky-800">Sakit</div>
           <div class="text-sm font-black text-slate-800">{{ stats.sick }}</div>
-        </div>
+        </button>
 
-        <div
+        <button
+          type="button"
           @click="emit('update:statusFilter', statusFilter === 'absent' ? 'all' : 'absent')"
           :class="[
             'py-1.5 px-1 rounded-xl cursor-pointer transition border',
@@ -127,10 +136,11 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
               ? 'bg-rose-100/80 border-rose-300 ring-2 ring-rose-500/20'
               : 'bg-slate-50 border-slate-100 hover:bg-rose-50/50'
           ]"
+          :aria-label="`Filter alpa, jumlah: ${stats.absent}`"
         >
-          <div class="text-[10px] font-bold text-rose-700">Alpa</div>
+          <div class="text-[10px] font-bold text-rose-800">Alpa</div>
           <div class="text-sm font-black text-slate-800">{{ stats.absent }}</div>
-        </div>
+        </button>
       </div>
     </div>
 
@@ -153,7 +163,9 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
       <div class="flex items-center justify-between gap-2 px-1">
         <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-[11px]">
           <button
+            type="button"
             @click="emit('update:statusFilter', 'all')"
+            aria-label="Tampilkan semua mahasiswa"
             :class="[
               'px-2.5 py-1 rounded-full font-medium shrink-0 transition',
               statusFilter === 'all'
@@ -164,7 +176,9 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
             Semua ({{ stats.total }})
           </button>
           <button
+            type="button"
             @click="emit('update:statusFilter', 'absent')"
+            aria-label="Filter mahasiswa alpa"
             :class="[
               'px-2.5 py-1 rounded-full font-medium shrink-0 transition',
               statusFilter === 'absent'
@@ -175,7 +189,9 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
             Alpa ({{ stats.absent }})
           </button>
           <button
+            type="button"
             @click="emit('update:statusFilter', 'permit')"
+            aria-label="Filter mahasiswa izin"
             :class="[
               'px-2.5 py-1 rounded-full font-medium shrink-0 transition',
               statusFilter === 'permit'
@@ -186,7 +202,9 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
             Izin ({{ stats.permit }})
           </button>
           <button
+            type="button"
             @click="emit('update:statusFilter', 'sick')"
+            aria-label="Filter mahasiswa sakit"
             :class="[
               'px-2.5 py-1 rounded-full font-medium shrink-0 transition',
               statusFilter === 'sick'
@@ -199,9 +217,11 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
         </div>
 
         <button
+          type="button"
           @click="emit('openAddGuest')"
           class="shrink-0 text-[11px] font-bold text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 px-2.5 py-1 rounded-full flex items-center gap-1 shadow-xs transition"
           title="Tambah Mahasiswa Revisi untuk Matkul Ini"
+          aria-label="Tambah Mahasiswa Revisi untuk Matkul Ini"
         >
           <UserPlus class="w-3.5 h-3.5 text-emerald-600" />
           <span>+ Revisi</span>
@@ -219,8 +239,8 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
         <!-- Student Info -->
         <div class="min-w-0 flex-1">
           <div class="flex items-center gap-1.5 flex-wrap">
-            <span class="text-[11px] font-semibold text-slate-400">#{{ idx + 1 }}</span>
-            <span class="font-mono text-xs font-semibold text-slate-500">{{ student.nim }}</span>
+            <span class="text-[11px] font-semibold text-slate-500">#{{ idx + 1 }}</span>
+            <span class="font-mono text-xs font-semibold text-slate-600">{{ student.nim }}</span>
             <span
               v-if="student.isGuest"
               class="text-[10px] font-bold bg-purple-100 text-purple-700 px-1.5 py-0.2 rounded-md border border-purple-200"
@@ -238,14 +258,16 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
           <button
             v-for="(config, statusKey) in statusLabels"
             :key="statusKey"
+            type="button"
             @click="emit('setStatus', student.id, statusKey as AttendanceStatus)"
             :class="[
               'w-8 h-8 rounded-lg text-xs font-bold transition flex items-center justify-center active:scale-90',
               (records[student.id] || 'present') === statusKey
                 ? config.activeBg
-                : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/70'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
             ]"
-            :title="config.label"
+            :title="`Tandai ${config.label} untuk ${student.name}`"
+            :aria-label="`Tandai ${config.label} untuk ${student.name}`"
           >
             {{ config.short }}
           </button>

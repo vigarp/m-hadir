@@ -51,7 +51,9 @@ function triggerFileInput() {
           <p class="text-xs text-slate-500">Kelola data offline dan instalasi aplikasi</p>
         </div>
         <button
+          type="button"
           @click="emit('close')"
+          aria-label="Tutup modal"
           class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition"
         >
           <X class="w-5 h-5" />
@@ -69,6 +71,7 @@ function triggerFileInput() {
             Install aplikasi ini di layar utama HP Anda agar bisa dibuka langsung seperti aplikasi biasa tanpa kuota internet.
           </p>
           <button
+            type="button"
             @click="emit('installPwa')"
             class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow-xs transition"
           >
@@ -79,27 +82,29 @@ function triggerFileInput() {
         <!-- Backup & Restore -->
         <div class="space-y-2.5">
           <h3 class="font-bold text-slate-700 uppercase tracking-wider text-[10px]">Cadangkan Data (Anti-Hilang)</h3>
-          <p class="text-slate-500 text-[11px]">
+          <p class="text-slate-600 text-[11px]">
             Karena aplikasi ini tidak memakai server (100% offline), Anda dapat mengunduh file cadangan data ke HP Anda.
           </p>
 
           <div class="grid grid-cols-2 gap-2 pt-1">
             <button
+              type="button"
               @click="emit('exportBackup')"
               class="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl flex flex-col items-center gap-1.5 text-center transition active:scale-95"
             >
               <Download class="w-5 h-5 text-emerald-600" />
               <span class="font-bold text-slate-800">Download Backup</span>
-              <span class="text-[10px] text-slate-400">Simpan file .json</span>
+              <span class="text-[10px] text-slate-500">Simpan file .json</span>
             </button>
 
             <button
+              type="button"
               @click="triggerFileInput"
               class="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl flex flex-col items-center gap-1.5 text-center transition active:scale-95"
             >
               <Upload class="w-5 h-5 text-blue-600" />
               <span class="font-bold text-slate-800">Pulihkan Data</span>
-              <span class="text-[10px] text-slate-400">Unggah file .json</span>
+              <span class="text-[10px] text-slate-500">Unggah file .json</span>
             </button>
           </div>
 
@@ -107,6 +112,7 @@ function triggerFileInput() {
             ref="fileInput"
             type="file"
             accept=".json"
+            aria-label="Pilih file backup JSON"
             class="hidden"
             @change="handleFileChange"
           />

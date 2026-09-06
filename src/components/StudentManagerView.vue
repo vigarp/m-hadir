@@ -176,8 +176,8 @@ function saveEdit(id: string) {
         <!-- Display Normal -->
         <div v-else class="min-w-0 flex-1">
           <div class="flex items-center gap-2">
-            <span class="text-[11px] font-semibold text-slate-400">#{{ idx + 1 }}</span>
-            <span class="font-mono text-xs font-semibold text-slate-500">{{ student.nim }}</span>
+            <span class="text-[11px] font-semibold text-slate-500">#{{ idx + 1 }}</span>
+            <span class="font-mono text-xs font-semibold text-slate-600">{{ student.nim }}</span>
           </div>
           <div class="font-bold text-xs sm:text-sm text-slate-800 truncate mt-0.5">
             {{ student.name }}
@@ -186,14 +186,18 @@ function saveEdit(id: string) {
 
         <div v-if="editingId !== student.id" class="flex items-center gap-1 shrink-0">
           <button
+            type="button"
             @click="startEdit(student)"
             class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition"
+            :aria-label="`Edit mahasiswa ${student.name}`"
           >
             <Edit2 class="w-3.5 h-3.5" />
           </button>
           <button
+            type="button"
             @click="emit('removeStudent', student.id)"
             class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition"
+            :aria-label="`Hapus mahasiswa ${student.name}`"
           >
             <Trash2 class="w-3.5 h-3.5" />
           </button>

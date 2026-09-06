@@ -61,6 +61,7 @@ onUnmounted(() => {
           @click="emit('openPaste')"
           class="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition active:scale-95"
           title="Paste Excel Mahasiswa"
+          aria-label="Paste Excel Mahasiswa"
         >
           <FileSpreadsheet class="w-5 h-5 text-emerald-400" />
         </button>
@@ -68,6 +69,7 @@ onUnmounted(() => {
           @click="emit('openSettings')"
           class="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition active:scale-95"
           title="Pengaturan & Backup"
+          aria-label="Pengaturan & Backup"
         >
           <Settings class="w-5 h-5" />
         </button>
@@ -75,7 +77,7 @@ onUnmounted(() => {
     </div>
 
     <!-- Bottom Navigation Bar inside Header / Mobile Tabs -->
-    <nav class="flex border-t border-slate-800 text-xs px-2">
+    <nav class="flex border-t border-slate-800 text-xs px-2" aria-label="Navigasi Utama">
       <button
         @click="emit('navigate', 'attendance')"
         :class="[

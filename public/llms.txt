@@ -1,0 +1,12 @@
+# m-hadir
+
+> Aplikasi Presensi Kelas Cepat & Offline untuk Ketua Kelas (KM)
+
+m-hadir adalah Progressive Web App (PWA) presensi kelas berbasis mobile yang dirancang khusus untuk mempermudah Ketua Kelas atau Koordinator Mata Kuliah dalam mencatat kehadiran mahasiswa, mengelola daftar mahasiswa per mata kuliah, dan menghasilkan format laporan pesan WhatsApp presensi yang rapi, to-the-point, dan siap kirim ke dosen tanpa koneksi internet.
+
+## Links
+
+- [Beranda](/)
+- [Manifest PWA](/manifest.webmanifest)
+- [Robots](/robots.txt)
+- [llms.txt](/llms.txt)
