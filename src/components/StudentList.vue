@@ -72,7 +72,6 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
         <button
           type="button"
           @click="emit('markAll', 'present')"
-          aria-label="Tandai semua mahasiswa hadir"
           class="text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1 rounded-lg flex items-center gap-1 transition active:scale-95"
         >
           <CheckCheck class="w-3.5 h-3.5" />
@@ -91,7 +90,6 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
               ? 'bg-emerald-100/80 border-emerald-300 ring-2 ring-emerald-500/20'
               : 'bg-slate-50 border-slate-100 hover:bg-emerald-50/50'
           ]"
-          :aria-label="`Filter hadir, jumlah: ${stats.present}`"
         >
           <div class="text-[10px] font-bold text-emerald-800">Hadir</div>
           <div class="text-sm font-black text-slate-800">{{ stats.present }}</div>
@@ -106,7 +104,6 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
               ? 'bg-amber-100/80 border-amber-300 ring-2 ring-amber-500/20'
               : 'bg-slate-50 border-slate-100 hover:bg-amber-50/50'
           ]"
-          :aria-label="`Filter izin, jumlah: ${stats.permit}`"
         >
           <div class="text-[10px] font-bold text-amber-800">Izin</div>
           <div class="text-sm font-black text-slate-800">{{ stats.permit }}</div>
@@ -121,7 +118,6 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
               ? 'bg-sky-100/80 border-sky-300 ring-2 ring-sky-500/20'
               : 'bg-slate-50 border-slate-100 hover:bg-sky-50/50'
           ]"
-          :aria-label="`Filter sakit, jumlah: ${stats.sick}`"
         >
           <div class="text-[10px] font-bold text-sky-800">Sakit</div>
           <div class="text-sm font-black text-slate-800">{{ stats.sick }}</div>
@@ -136,7 +132,6 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
               ? 'bg-rose-100/80 border-rose-300 ring-2 ring-rose-500/20'
               : 'bg-slate-50 border-slate-100 hover:bg-rose-50/50'
           ]"
-          :aria-label="`Filter alpa, jumlah: ${stats.absent}`"
         >
           <div class="text-[10px] font-bold text-rose-800">Alpa</div>
           <div class="text-sm font-black text-slate-800">{{ stats.absent }}</div>
@@ -165,7 +160,6 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
           <button
             type="button"
             @click="emit('update:statusFilter', 'all')"
-            aria-label="Tampilkan semua mahasiswa"
             :class="[
               'px-2.5 py-1 rounded-full font-medium shrink-0 transition',
               statusFilter === 'all'
@@ -178,7 +172,6 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
           <button
             type="button"
             @click="emit('update:statusFilter', 'absent')"
-            aria-label="Filter mahasiswa alpa"
             :class="[
               'px-2.5 py-1 rounded-full font-medium shrink-0 transition',
               statusFilter === 'absent'
@@ -191,7 +184,6 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
           <button
             type="button"
             @click="emit('update:statusFilter', 'permit')"
-            aria-label="Filter mahasiswa izin"
             :class="[
               'px-2.5 py-1 rounded-full font-medium shrink-0 transition',
               statusFilter === 'permit'
@@ -204,7 +196,6 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
           <button
             type="button"
             @click="emit('update:statusFilter', 'sick')"
-            aria-label="Filter mahasiswa sakit"
             :class="[
               'px-2.5 py-1 rounded-full font-medium shrink-0 transition',
               statusFilter === 'sick'
@@ -221,7 +212,6 @@ const statusLabels: Record<AttendanceStatus, { short: string; label: string; bg:
           @click="emit('openAddGuest')"
           class="shrink-0 text-[11px] font-bold text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 px-2.5 py-1 rounded-full flex items-center gap-1 shadow-xs transition"
           title="Tambah Mahasiswa Revisi untuk Matkul Ini"
-          aria-label="Tambah Mahasiswa Revisi untuk Matkul Ini"
         >
           <UserPlus class="w-3.5 h-3.5 text-emerald-600" />
           <span>+ Revisi</span>
