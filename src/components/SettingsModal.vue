@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { X, Download, Upload, Smartphone, Check } from 'lucide-vue-next';
+import { X, Download, Upload, Smartphone, Check, Code2, ArrowRight } from 'lucide-vue-next';
 
 defineProps<{
   isOpen: boolean;
@@ -12,6 +12,7 @@ const emit = defineEmits<{
   (e: 'exportBackup'): void;
   (e: 'importBackup', content: string): void;
   (e: 'installPwa'): void;
+  (e: 'openJsonImport'): void;
 }>();
 
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -123,8 +124,32 @@ function triggerFileInput() {
           </div>
         </div>
 
+        <!-- Input Massal JSON Section -->
+        <div class="space-y-2.5 pt-2 border-t border-slate-100">
+          <h3 class="font-bold text-slate-700 uppercase tracking-wider text-[10px]">Input Data Massal (JSON)</h3>
+          <p class="text-slate-600 text-[11px]">
+            Input daftar mata kuliah dan mahasiswa sekaligus banyak menggunakan teks JSON.
+          </p>
+          <button
+            type="button"
+            @click="emit('openJsonImport'); emit('close')"
+            class="w-full p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl flex items-center justify-between transition active:scale-98"
+          >
+            <div class="flex items-center gap-2">
+              <div class="p-1.5 bg-slate-900 text-emerald-400 rounded-lg">
+                <Code2 class="w-4 h-4" />
+              </div>
+              <div class="text-left">
+                <span class="font-bold text-slate-800 block text-xs">Buka Editor JSON Massal</span>
+                <span class="text-[10px] text-slate-500">Seed data matkul & mahasiswa instan</span>
+              </div>
+            </div>
+            <ArrowRight class="w-4 h-4 text-slate-400" />
+          </button>
+        </div>
+
         <!-- App Info -->
-        <div class="pt-3 border-t border-slate-200 text-slate-400 text-[11px] space-y-1">
+        <div class="pt-3 border-t border-slate-200 text-slate-500 text-[11px] space-y-1">
           <div class="flex justify-between">
             <span>Versi Aplikasi:</span>
             <span class="font-mono text-slate-600">v1.0.0 (PWA Offline)</span>

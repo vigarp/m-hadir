@@ -113,4 +113,37 @@ describe('useAttendance Composable', () => {
     expect(filteredStudents.value.length).toBe(1);
     expect(filteredStudents.value[0].id).toBe(enrolledStudents.value[0].id);
   });
+
+  it('correctly scopes revisi students to their assigned course only', () => {
+    const { addMainStudent, courses, activeCourseId } = useStorage();
+    const course1Id = courses.value[0].id;
+    const course2Id = courses.value[1].id;
+
+    // Student 1: regular (all courses)
+    addMainStudent('22099', 'Siswa Reguler');
+
+    // Student 2: only for course 1
+    addMainStudent('21099', 'Siswa Revisi Matkul 1', [course1Id]);
+
+    const { enrolledStudents, initSession } = useAttendance();
+
+    // Check on Course 1
+    activeCourseId.value = course1Id;
+    initSession();
+
+    const inCourse1 = enrolledStudents.value.find((s) => s.nim === '21099');
+    expect(inCourse1).toBeDefined();
+    expect(inCourse1?.isGuest).toBe(true);
+
+    // Check on Course 2
+    activeCourseId.value = course2Id;
+    initSession();
+
+    const inCourse2 = enrolledStudents.value.find((s) => s.nim === '21099');
+    expect(inCourse2).toBeUndefined(); // Must NOT appear in course 2!
+
+    const regularInCourse2 = enrolledStudents.value.find((s) => s.nim === '22099');
+    expect(regularInCourse2).toBeDefined();
+    expect(regularInCourse2?.isGuest).toBe(false);
+  });
 });

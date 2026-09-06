@@ -21,11 +21,41 @@ export function useAttendance() {
     return courses.value.find((c) => c.id === activeCourseId.value) || courses.value[0];
   });
 
-  // Combined student roster: Regular students + course-specific guest/revisi students
+  // Combined student roster: Regular students (all courses) + course-scoped revisi students + custom course guests
   const enrolledStudents = computed<Student[]>(() => {
-    const regular = mainStudents.value.map((s) => ({ ...s, isGuest: false }));
-    const guests = (currentCourse.value?.customStudents || []).map((s) => ({ ...s, isGuest: true }));
-    return [...regular, ...guests];
+    if (!currentCourse.value) return [];
+    const activeId = currentCourse.value.id;
+
+    // 1. From mainStudents:
+    // - If s.courseIds is empty or undefined: belongs to all courses (regular)
+    // - If s.courseIds has values: only include if s.courseIds.includes(activeId), marked as isGuest = true (revisi)
+    const fromMain: Student[] = mainStudents.value
+      .filter((s) => !s.courseIds || s.courseIds.length === 0 || s.courseIds.includes(activeId))
+      .map((s) => {
+        const isRevisi = Boolean(s.isGuest || (s.courseIds && s.courseIds.length > 0));
+        return {
+          ...s,
+          isGuest: isRevisi
+        };
+      });
+
+    // 2. Backward compatibility: course.customStudents
+    const custom: Student[] = (currentCourse.value.customStudents || []).map((s) => ({
+      ...s,
+      isGuest: true
+    }));
+
+    // Deduplicate by ID
+    const seen = new Set<string>();
+    const result: Student[] = [];
+    [...fromMain, ...custom].forEach((s) => {
+      if (!seen.has(s.id)) {
+        seen.add(s.id);
+        result.push(s);
+      }
+    });
+
+    return result;
   });
 
   // Current attendance records: studentId -> AttendanceStatus

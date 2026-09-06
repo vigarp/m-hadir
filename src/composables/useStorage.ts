@@ -78,23 +78,30 @@ watch(activeCourseId, (val) => saveJson(STORAGE_KEYS.ACTIVE_COURSE, val));
 
 export function useStorage() {
   // --- Student Management ---
-  function addMainStudent(nim: string, name: string): Student {
+  function addMainStudent(nim: string, name: string, courseIds?: string[]): Student {
     const student: Student = {
       id: 's-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6),
       nim: nim.trim(),
-      name: name.trim()
+      name: name.trim(),
+      courseIds: courseIds && courseIds.length > 0 ? courseIds : undefined,
+      isGuest: Boolean(courseIds && courseIds.length > 0)
     };
     mainStudents.value.push(student);
     return student;
   }
 
-  function addMainStudentsBatch(list: Array<{ nim: string; name: string }>, replace = false): number {
+  function addMainStudentsBatch(
+    list: Array<{ nim: string; name: string; courseIds?: string[]; isGuest?: boolean }>,
+    replace = false
+  ): number {
     const newStudents: Student[] = list
       .filter((item) => item.name && item.nim)
       .map((item, idx) => ({
         id: 's-' + (Date.now() + idx) + '-' + Math.random().toString(36).substring(2, 6),
         nim: item.nim.trim(),
-        name: item.name.trim()
+        name: item.name.trim(),
+        courseIds: item.courseIds && item.courseIds.length > 0 ? item.courseIds : undefined,
+        isGuest: Boolean(item.isGuest || (item.courseIds && item.courseIds.length > 0))
       }));
 
     if (replace) {
@@ -115,7 +122,13 @@ export function useStorage() {
   function updateMainStudent(id: string, updated: Partial<Student>) {
     const idx = mainStudents.value.findIndex((s) => s.id === id);
     if (idx !== -1) {
-      mainStudents.value[idx] = { ...mainStudents.value[idx], ...updated };
+      const current = mainStudents.value[idx];
+      const merged = { ...current, ...updated };
+      if ('courseIds' in updated) {
+        merged.courseIds = updated.courseIds && updated.courseIds.length > 0 ? updated.courseIds : undefined;
+        merged.isGuest = Boolean(merged.courseIds && merged.courseIds.length > 0);
+      }
+      mainStudents.value[idx] = merged;
     }
   }
 
@@ -135,6 +148,33 @@ export function useStorage() {
       activeCourseId.value = course.id;
     }
     return course;
+  }
+
+  function addCoursesBatch(list: Array<Partial<Course>>, replace = false): number {
+    const validCourses: Course[] = list
+      .filter((c) => c && c.name && c.name.trim())
+      .map((c, idx) => ({
+        id: c.id || ('c-' + (Date.now() + idx) + '-' + Math.random().toString(36).substring(2, 6)),
+        name: c.name!.trim(),
+        code: c.code?.trim() || '',
+        className: c.className?.trim() || '',
+        lecturer: c.lecturer?.trim() || '',
+        time: c.time?.trim() || '',
+        customStudents: c.customStudents || []
+      }));
+
+    if (replace) {
+      courses.value = validCourses;
+      activeCourseId.value = validCourses[0]?.id || '';
+    } else {
+      const existingNames = new Set(courses.value.map((c) => c.name.toLowerCase()));
+      const filtered = validCourses.filter((c) => !existingNames.has(c.name.toLowerCase()));
+      courses.value.push(...filtered);
+      if (!activeCourseId.value && courses.value.length > 0) {
+        activeCourseId.value = courses.value[0].id;
+      }
+    }
+    return validCourses.length;
   }
 
   function updateCourse(id: string, updated: Partial<Course>) {
@@ -233,6 +273,87 @@ export function useStorage() {
     }
   }
 
+  function importJsonSeed(
+    jsonString: string,
+    options: { replaceCourses?: boolean; replaceStudents?: boolean } = {}
+  ): { coursesAdded: number; studentsAdded: number } {
+    const { replaceCourses = false, replaceStudents = false } = options;
+    const parsed = JSON.parse(jsonString);
+
+    let incomingCourses: Array<Partial<Course>> = [];
+    let incomingStudents: Array<{
+      nim: string;
+      name: string;
+      courseIds?: string[];
+      courseNames?: string[];
+      courseCodes?: string[];
+      isGuest?: boolean;
+    }> = [];
+
+    if (Array.isArray(parsed)) {
+      if (parsed.length > 0) {
+        const first = parsed[0];
+        // If it has nim, it's a student array
+        if (first && (first.nim !== undefined || (!first.lecturer && !first.time && !first.code && !first.className))) {
+          incomingStudents = parsed;
+        } else {
+          incomingCourses = parsed;
+        }
+      }
+    } else if (typeof parsed === 'object' && parsed !== null) {
+      if (Array.isArray(parsed.courses)) {
+        incomingCourses = parsed.courses;
+      }
+      if (Array.isArray(parsed.students)) {
+        incomingStudents = parsed.students;
+      } else if (Array.isArray(parsed.mainStudents)) {
+        incomingStudents = parsed.mainStudents;
+      }
+    }
+
+    let coursesAdded = 0;
+    if (incomingCourses.length > 0) {
+      coursesAdded = addCoursesBatch(incomingCourses, replaceCourses);
+    }
+
+    let studentsAdded = 0;
+    if (incomingStudents.length > 0) {
+      const resolvedStudents = incomingStudents.map((s) => {
+        const finalCourseIds = s.courseIds ? [...s.courseIds] : [];
+        if (s.courseNames && Array.isArray(s.courseNames)) {
+          s.courseNames.forEach((cName) => {
+            const matched = courses.value.find(
+              (c) => c.name.toLowerCase() === cName.toLowerCase()
+            );
+            if (matched && !finalCourseIds.includes(matched.id)) {
+              finalCourseIds.push(matched.id);
+            }
+          });
+        }
+        if (s.courseCodes && Array.isArray(s.courseCodes)) {
+          s.courseCodes.forEach((cCode) => {
+            const matched = courses.value.find(
+              (c) => c.code && c.code.toLowerCase() === cCode.toLowerCase()
+            );
+            if (matched && !finalCourseIds.includes(matched.id)) {
+              finalCourseIds.push(matched.id);
+            }
+          });
+        }
+        return {
+          nim: s.nim || '',
+          name: s.name || '',
+          courseIds: finalCourseIds.length > 0 ? finalCourseIds : undefined,
+          isGuest: Boolean(s.isGuest || finalCourseIds.length > 0)
+        };
+      });
+
+      studentsAdded = addMainStudentsBatch(resolvedStudents, replaceStudents);
+    }
+
+    return { coursesAdded, studentsAdded };
+  }
+
   return {
     mainStudents,
     courses,
@@ -243,6 +364,7 @@ export function useStorage() {
     removeMainStudent,
     updateMainStudent,
     addCourse,
+    addCoursesBatch,
     updateCourse,
     removeCourse,
     addCustomStudentToCourse,
@@ -251,7 +373,8 @@ export function useStorage() {
     getSession,
     deleteSession,
     exportBackup,
-    importBackup
+    importBackup,
+    importJsonSeed
   };
 }
 

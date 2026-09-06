@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Plus, Trash2, Edit2, X, Users } from 'lucide-vue-next';
+import { Plus, Trash2, Edit2, X, Users, Code2 } from 'lucide-vue-next';
 import type { Course } from '../types';
 
 defineProps<{
@@ -15,6 +15,7 @@ const emit = defineEmits<{
   (e: 'removeCourse', id: string): void;
   (e: 'removeCustomStudent', courseId: string, studentId: string): void;
   (e: 'openAddGuest', courseId: string): void;
+  (e: 'openJsonImport'): void;
 }>();
 
 const showAddForm = ref(false);
@@ -78,13 +79,26 @@ function saveEdit(id: string) {
         <h2 class="text-sm font-bold text-slate-800">Daftar Mata Kuliah</h2>
         <p class="text-xs text-slate-500">Pilih mata kuliah aktif atau kelola matkul kelas</p>
       </div>
-      <button
-        @click="showAddForm = !showAddForm"
-        class="text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-xs transition active:scale-95"
-      >
-        <Plus class="w-4 h-4" />
-        <span>Tambah Matkul</span>
-      </button>
+      <div class="flex items-center gap-1.5">
+        <button
+          type="button"
+          @click="emit('openJsonImport')"
+          class="text-xs font-bold text-slate-700 bg-white hover:bg-slate-100 border border-slate-300 px-2.5 py-1.5 rounded-xl flex items-center gap-1 transition active:scale-95 shadow-2xs"
+          title="Input Massal via JSON"
+          aria-label="Input Massal via JSON"
+        >
+          <Code2 class="w-3.5 h-3.5 text-indigo-600" />
+          <span>{ } JSON</span>
+        </button>
+        <button
+          type="button"
+          @click="showAddForm = !showAddForm"
+          class="text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-xs transition active:scale-95"
+        >
+          <Plus class="w-4 h-4" />
+          <span>Tambah Matkul</span>
+        </button>
+      </div>
     </div>
 
     <!-- Form Tambah Matkul Baru -->

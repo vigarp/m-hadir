@@ -5,6 +5,7 @@ export interface Student {
   nim: string;
   name: string;
   isGuest?: boolean; // Penanda mahasiswa revisi / lintas kelas
+  courseIds?: string[]; // Jika kosong/undefined -> berlaku untuk semua matkul. Jika diisi -> hanya muncul di matkul tersebut sebagai revisi
 }
 
 export interface Course {

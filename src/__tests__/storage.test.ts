@@ -102,5 +102,45 @@ describe('useStorage Composable', () => {
     expect(courses.value.length).toBe(1);
     expect(courses.value[0].name).toBe('Backup Course');
   });
+
+  it('supports adding course-scoped student directly in mainStudents', () => {
+    const { addMainStudent } = useStorage();
+    const student = addMainStudent('21099', 'Siswa Revisi', ['c-1', 'c-2']);
+    expect(student.nim).toBe('21099');
+    expect(student.courseIds).toEqual(['c-1', 'c-2']);
+    expect(student.isGuest).toBe(true);
+  });
+
+  it('adds batch courses and imports seed json for both courses and students', () => {
+    const { courses, mainStudents, addCoursesBatch, importJsonSeed } = useStorage();
+
+    // 1. Test addCoursesBatch
+    const count = addCoursesBatch([
+      { name: 'Kecerdasan Buatan', code: 'AI-101', className: 'TI-01' },
+      { name: 'Jaringan Komputer', code: 'JK-102', className: 'TI-02' }
+    ]);
+    expect(count).toBe(2);
+    expect(courses.value.some((c) => c.name === 'Kecerdasan Buatan')).toBe(true);
+
+    // 2. Test importJsonSeed with object format and courseNames mapping
+    const seedJson = JSON.stringify({
+      courses: [
+        { name: 'Pemrograman Web', code: 'PW-103', className: '03SIFE' }
+      ],
+      students: [
+        { nim: '23001', name: 'Mhs Reguler' },
+        { nim: '21002', name: 'Mhs Revisi', courseNames: ['Pemrograman Web'] }
+      ]
+    });
+
+    const result = importJsonSeed(seedJson);
+    expect(result.coursesAdded).toBeGreaterThanOrEqual(1);
+    expect(result.studentsAdded).toBeGreaterThanOrEqual(2);
+
+    const revisiStudent = mainStudents.value.find((s) => s.nim === '21002');
+    expect(revisiStudent).toBeDefined();
+    expect(revisiStudent?.isGuest).toBe(true);
+    expect(revisiStudent?.courseIds?.length).toBe(1);
+  });
 });
 

@@ -11,6 +11,7 @@ import SmartPasteModal from './components/SmartPasteModal.vue';
 import WhatsAppGeneratorModal from './components/WhatsAppGeneratorModal.vue';
 import AddGuestModal from './components/AddGuestModal.vue';
 import SettingsModal from './components/SettingsModal.vue';
+import JsonImportModal from './components/JsonImportModal.vue';
 import { ChevronDown } from 'lucide-vue-next';
 
 // Navigation tab
@@ -33,7 +34,8 @@ const {
   removeCustomStudentFromCourse,
   deleteSession,
   exportBackup,
-  importBackup
+  importBackup,
+  importJsonSeed
 } = useStorage();
 
 const {
@@ -59,6 +61,7 @@ const guestTargetCourseId = ref<string>('');
 const showGeneratorModal = ref(false);
 const showAddGuestModal = ref(false);
 const showSettingsModal = ref(false);
+const showJsonModal = ref(false);
 
 // PWA Install Prompt handling
 const deferredPrompt = ref<any>(null);
@@ -124,6 +127,14 @@ function loadHistorySession(courseId: string, date: string) {
   activeCourseId.value = courseId;
   sessionDate.value = date;
   activeTab.value = 'attendance';
+  initSession();
+}
+
+function handleJsonImport(data: { jsonString: string; replaceCourses: boolean; replaceStudents: boolean }) {
+  importJsonSeed(data.jsonString, {
+    replaceCourses: data.replaceCourses,
+    replaceStudents: data.replaceStudents
+  });
   initSession();
 }
 </script>
@@ -224,6 +235,7 @@ function loadHistorySession(courseId: string, date: string) {
           @remove-course="removeCourse"
           @remove-custom-student="removeCustomStudentFromCourse"
           @open-add-guest="openAddGuest($event)"
+          @open-json-import="showJsonModal = true"
         />
       </section>
 
@@ -231,10 +243,12 @@ function loadHistorySession(courseId: string, date: string) {
       <section v-else-if="activeTab === 'students'">
         <StudentManagerView
           :students="mainStudents"
-          @add-student="addMainStudent($event.nim, $event.name)"
+          :courses="courses"
+          @add-student="addMainStudent($event.nim, $event.name, $event.courseIds)"
           @update-student="updateMainStudent"
           @remove-student="removeMainStudent"
           @open-paste="openPasteForMain"
+          @open-json-import="showJsonModal = true"
         />
       </section>
 
@@ -287,6 +301,14 @@ function loadHistorySession(courseId: string, date: string) {
       @export-backup="exportBackup"
       @import-backup="importBackup"
       @install-pwa="installPwa"
+      @open-json-import="showJsonModal = true"
+    />
+
+    <!-- 5. JSON Bulk Import Modal -->
+    <JsonImportModal
+      :is-open="showJsonModal"
+      @close="showJsonModal = false"
+      @import="handleJsonImport"
     />
   </div>
 </template>
