@@ -221,7 +221,7 @@ function getCourseName(courseId: string): string {
 
       <!-- Lingkup Mata Kuliah (Reguler vs Revisi) -->
       <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
-        <label class="block text-[11px] font-bold text-slate-700">Lingkup Mata Kuliah:</label>
+        <span class="block text-[11px] font-bold text-slate-700">Lingkup Mata Kuliah:</span>
         <div class="flex items-center gap-4 text-xs">
           <label class="flex items-center gap-1.5 cursor-pointer">
             <input
